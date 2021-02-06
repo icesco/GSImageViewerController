@@ -79,11 +79,11 @@ open class GSTransitionInfo {
             return Self.allCases
         }
         
-        static var vertical: [PermittedSwipeDirection] {
+        public static var vertical: [PermittedSwipeDirection] {
             return [.bottom, .top]
         }
         
-        static var horizontal: [PermittedSwipeDirection] {
+        public static var horizontal: [PermittedSwipeDirection] {
             return [.left, .right]
         }
     }
