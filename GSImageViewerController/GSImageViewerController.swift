@@ -69,9 +69,29 @@ open class GSTransitionInfo {
         case spring(damping: CGFloat, initialVelocity: CGFloat)
     }
     
+    public enum PermittedSwipeDirection: CaseIterable {
+        case top
+        case bottom
+        case left
+        case right
+        
+        static var allDirections: [PermittedSwipeDirection] {
+            return Self.allCases
+        }
+        
+        static var vertical: [PermittedSwipeDirection] {
+            return [.bottom, .top]
+        }
+        
+        static var horizontal: [PermittedSwipeDirection] {
+            return [.left, .right]
+        }
+    }
+    
     open var duration: TimeInterval = 0.35
     open var canSwipe: Bool         = true
     open var animation: Animation   = .linear
+    open var allowedSwipes: [PermittedSwipeDirection] = PermittedSwipeDirection.allDirections
     
     public init(fromView: UIView) {
         self.fromView = fromView
@@ -455,10 +475,20 @@ class GSImageViewerTransition: NSObject, UIViewControllerAnimatedTransitioning {
 extension GSImageViewerController: UIGestureRecognizerDelegate {
     
     public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        
         if let pan = gestureRecognizer as? UIPanGestureRecognizer {
             if scrollView.zoomScale != 1.0 {
                 return false
             }
+            
+            if transitionInfo?.allowedSwipes == GSTransitionInfo.PermittedSwipeDirection.vertical,
+               abs(pan.translation(in: view).x) > 20 {
+                return false
+            } else if transitionInfo?.allowedSwipes == GSTransitionInfo.PermittedSwipeDirection.horizontal,
+                      abs(pan.translation(in: view).y) > 20{
+                return false
+            }
+            
             if imageInfo.imageMode == .aspectFill && (scrollView.contentOffset.x > 0 || pan.translation(in: view).x <= 0) {
                 return false
             }
