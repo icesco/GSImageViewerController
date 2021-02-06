@@ -75,7 +75,7 @@ open class GSTransitionInfo {
         case left
         case right
         
-        static var allDirections: [PermittedSwipeDirection] {
+        public static var allDirections: [PermittedSwipeDirection] {
             return Self.allCases
         }
         
