@@ -69,29 +69,29 @@ open class GSTransitionInfo {
         case spring(damping: CGFloat, initialVelocity: CGFloat)
     }
     
-    public enum PermittedSwipeDirection: CaseIterable {
+    public enum PermittedSwipeDirection: Int, CaseIterable {
         case top
         case bottom
         case left
         case right
         
-        public static var allDirections: [PermittedSwipeDirection] {
-            return Self.allCases
+        public static var allDirections: Set<PermittedSwipeDirection> {
+            return Set(Self.allCases)
         }
         
-        public static var vertical: [PermittedSwipeDirection] {
-            return [.bottom, .top]
+        public static var vertical: Set<PermittedSwipeDirection> {
+            return Set([.bottom, .top])
         }
         
-        public static var horizontal: [PermittedSwipeDirection] {
-            return [.left, .right]
+        public static var horizontal: Set<PermittedSwipeDirection> {
+            return Set([.left, .right])
         }
     }
     
     open var duration: TimeInterval = 0.35
     open var canSwipe: Bool         = true
     open var animation: Animation   = .linear
-    open var allowedSwipes: [PermittedSwipeDirection] = PermittedSwipeDirection.allDirections
+    open var allowedSwipes: Set<PermittedSwipeDirection> = PermittedSwipeDirection.allDirections
     
     public init(fromView: UIView) {
         self.fromView = fromView
@@ -482,10 +482,10 @@ extension GSImageViewerController: UIGestureRecognizerDelegate {
             }
             
             if transitionInfo?.allowedSwipes == GSTransitionInfo.PermittedSwipeDirection.vertical,
-               abs(pan.translation(in: view).x) > 20 {
+               abs(pan.translation(in: view).x) > 0 {
                 return false
             } else if transitionInfo?.allowedSwipes == GSTransitionInfo.PermittedSwipeDirection.horizontal,
-                      abs(pan.translation(in: view).y) > 20{
+                      abs(pan.translation(in: view).y) > 0{
                 return false
             }
             
